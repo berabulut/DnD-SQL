@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Diagram } from './components/WidgetConfig';
+import { BodyWidget } from './components/widgets/BodyWidget';
+
+let app = new Diagram();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BodyWidget app={app} />
   </React.StrictMode>,
   document.getElementById('root')
 );

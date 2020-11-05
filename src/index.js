@@ -6,11 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import { Diagram } from './components/WidgetConfig';
 import { BodyWidget } from './components/widgets/BodyWidget';
 
-let app = new Diagram();
 
 ReactDOM.render(
   <React.StrictMode>
-    <BodyWidget app={app} />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

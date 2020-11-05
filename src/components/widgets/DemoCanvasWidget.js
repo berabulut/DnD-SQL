@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -42,7 +41,7 @@ export class DemoCanvasWidget extends React.Component {
   render() {
     return (
       <Container
-        background={this.props.background || "rgb(60, 60, 60)"}
+        background={this.props.background || "rgb(19 28 58 / 90%)"}
         color={this.props.color || "rgba(255,255,255, 0.05)"}
       >
         {this.props.children}

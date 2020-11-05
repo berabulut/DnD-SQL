@@ -6,7 +6,7 @@ import { DemoCanvasWidget } from "./DemoCanvasWidget";
 import { DefaultNodeModel } from "@projectstorm/react-diagrams";
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
-
+import './Canvas.css';
 
 export const Body = styled.div`
   flex-grow: 1;
@@ -56,11 +56,9 @@ export class BodyWidget extends React.Component {
         .getModel()
         .getNodes()
         .map((val, key) => {
-          let links = Object.values(
-            val.getPort("Out")?.getLinks() || ""
-          );
-          console.log(val)
-          console.log(links)
+          let links = Object.values(val.getPort("Out")?.getLinks() || "");
+          console.log(val);
+          console.log(links);
           links.map((value) => {
             if (this.connections.length !== 0) {
               if (this.connections[0].source.length !== 0) {
@@ -86,95 +84,28 @@ export class BodyWidget extends React.Component {
             }
           });
         });
-    } catch (err) {console.log(err)}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  bForce = () => {
-    this.getConnectionInfo();
+  createNewTable = () => {
+    console.log('calisti')
+    const node = new DefaultNodeModel({
+      name: 'Table',
+      color: 'blue'
+    })
+    node.setPosition(150, 150);
+    this.props.app.getDiagramEngine().getModel().addNode(node);
     this.forceUpdate();
-  };
+  }
 
   render() {
     return (
-      <Body>
-        <Header>
-          <div className="title">Storm React Diagrams - DnD demo</div>
-        </Header>
-        <Content>
-          <TrayWidget>
-            <TrayItemWidget
-              model={{ type: "in" }}
-              name="In Node"
-              color="rgb(192,255,0)"
-            />
-            <TrayItemWidget
-              model={{ type: "out" }}
-              name="Out Node"
-              color="rgb(0,192,255)"
-            />
-            <button id="force-render" onClick={this.bForce}>
-              force render
-            </button>
-          </TrayWidget>
-          <Layer
-            onDrop={(event) => {
-              var data = JSON.parse(
-                event.dataTransfer.getData("storm-diagram-node")
-              );
-              var nodesCount = _.keys(
-                this.props.app.getDiagramEngine().getModel().getNodes()
-              ).length;
-
-              
-
-              var node = new DefaultNodeModel(
-                "Node " + (nodesCount + 1),
-                "rgb(0,192,255)"
-              );
-              if (data.type === "in") {
-                node = new DefaultNodeModel(
-                  "Node " + (nodesCount + 1),
-                  "rgb(192,255,0)"
-                );
-                node.addInPort("In");
-              } else {
-                node = new DefaultNodeModel(
-                  "Node " + (nodesCount + 1),
-                  "rgb(0,192,255)"
-                );
-                node.addOutPort("Out");
-              }
-              var point = this.props.app
-                .getDiagramEngine()
-                .getRelativeMousePoint(event);
-              node.setPosition(point);
-              this.props.app.getDiagramEngine().getModel().addNode(node);
-              this.forceUpdate();
-            }}
-            onDragOver={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <div>
-              {this.connections.length !== 0 &&
-                this.connections.map((val, key) => {
-                  if (val.source.length !== 0) {
-                    return (
-                      <div>
-                        <h2 style={{ color: "black" }}>
-                          {val.source} {"->"} {val.target}
-                        </h2>
-                        <h5 style={{ color: "black" }}></h5>
-                      </div>
-                    );
-                  }
-                })}
-            </div>
-            <DemoCanvasWidget>
-              <CanvasWidget engine={this.props.app.getDiagramEngine()} />
-            </DemoCanvasWidget>
-          </Layer>
-        </Content>
+      <Body className="CanvasBody">
+        <DemoCanvasWidget>
+          <CanvasWidget engine={this.props.app.getDiagramEngine()} />
+        </DemoCanvasWidget>
       </Body>
     );
   }

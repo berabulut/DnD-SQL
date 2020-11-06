@@ -57,8 +57,6 @@ export class BodyWidget extends React.Component {
         .getNodes()
         .map((val, key) => {
           let links = Object.values(val.getPort("Out")?.getLinks() || "");
-          console.log(val);
-          console.log(links);
           links.map((value) => {
             if (this.connections.length !== 0) {
               if (this.connections[0].source.length !== 0) {

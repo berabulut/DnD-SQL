@@ -19,21 +19,22 @@ const useStyles = makeStyles((theme) => ({
 
 export const TableNodeWidget = (props) => {
   const classes = useStyles();
-  const [selectedNode, setSelectedNode] = React.useState(props.node)
 
-  React.useEffect(() =>{
-    setSelectedNode(props.node)
-  })
+  const openRightMenu = (s) => {
+    s.isRightMenuOpen = true;
+  }
+  const selectTable = (s) => {
+    s.selectedTableId = props.node.options.id;
+  }
 
   return (
     <List
-      onClick={() =>
-        TableStates.update((s) => {
-          s.isRightMenuOpen = true;
-          s.selectedNode = selectedNode;
-        })}
       subheader={<ListSubheader>New Table</ListSubheader>}
       className={classes.root}
+      onClick={() => {
+        TableStates.update(openRightMenu)
+        TableStates.update(selectTable)
+      }}
     >
       <ListItem divider>
         <ListItemText primary="Inbox" />

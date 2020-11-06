@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
+import { useStoreState } from "pullstate";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { TableStates } from "../TableStates";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from '@material-ui/icons/Close';
 import CancelIcon from '@material-ui/icons/Cancel';
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
+
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -79,19 +75,17 @@ const useStyles = makeStyles((theme) => ({
 const EditTable = (props) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(props.open);
-  const [selectedNode, setSelectedNode] = useState(props.selectedNode)
+  const ReadTableStates = useStoreState(TableStates);
+  const [isMenuOpen, setMenuOpen] = useState(false)
+  const [selectedTableId, setSelectedTableId] = useState('')
 
   useEffect(() => {
-    setOpen(props.open);
-    setSelectedNode(props.selectedNode)
-    console.log(props.selectedNode)
-  });
+    setMenuOpen(ReadTableStates.isRightMenuOpen);
+    setSelectedTableId(ReadTableStates.selectedTableId)
+  }, [ReadTableStates.isRightMenuOpen, ReadTableStates.selectedTableId])
 
-  const handleDrawerClose = () => {
-    props.TableStates.update((s) => {
-      s.isRightMenuOpen = false;
-    })
+  const handleDrawerClose = (s) => {
+    s.isRightMenuOpen = false;
   };
 
   return (
@@ -99,7 +93,7 @@ const EditTable = (props) => {
       className={classes.drawer}
       variant="persistent"
       anchor="right"
-      open={open}
+      open={isMenuOpen}
       classes={{
         paper: classes.drawerPaper,
       }}
@@ -108,11 +102,14 @@ const EditTable = (props) => {
         <Typography variant="h5" noWrap className={classes.menuTitle}>
             Edit Table
           </Typography>
-        <IconButton onClick={handleDrawerClose}>
+        <IconButton onClick={() => {
+          TableStates.update(handleDrawerClose)
+        }}>
           <CancelIcon />
         </IconButton>
       </div>
       <Divider />
+      <p>{selectedTableId}</p>
       <List></List>
     </Drawer>
   );

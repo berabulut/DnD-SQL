@@ -1,36 +1,55 @@
 import * as React from "react";
+import { UIStore } from "../UIStore";
 import { PortWidget } from "@projectstorm/react-diagrams";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: "100%",
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
-export class TableNodeWidget extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-    };
-  }
+export const TableNodeWidget = (props) => {
+  const classes = useStyles();
 
-  render() {
-    return (
-      <div>
-        <p>TABLE</p>
-        <PortWidget
-          engine={this.props.engine}
-          port={this.props.node.getPort("out")}
-        >
+  return (
+    <List
+      onClick={() =>
+        UIStore.update((s) => {
+          s.isRightMenuOpen = true;
+        })}
+      subheader={<ListSubheader>New Table</ListSubheader>}
+      className={classes.root}
+    >
+      <ListItem divider>
+        <ListItemText primary="Inbox" />
+        <PortWidget engine={props.engine} port={props.node.getPort("out")}>
           <div className="circle-port out-port" />
         </PortWidget>
-
-        <PortWidget
-          engine={this.props.engine}
-          port={this.props.node.getPort("in")}
-        >
+        <PortWidget engine={props.engine} port={props.node.getPort("in")}>
           <div className="circle-port in-port" />
         </PortWidget>
-      </div>
-    );
-  }
-}
+      </ListItem>
+      <ListItem divider>
+        <ListItemText primary="Drafts" />
+        <PortWidget engine={props.engine} port={props.node.getPort("out")}>
+          <div className="circle-port out-port" />
+        </PortWidget>
+        <PortWidget engine={props.engine} port={props.node.getPort("in")}>
+          <div className="circle-port in-port" />
+        </PortWidget>
+      </ListItem>
+    </List>
+  );
+};
 
 /*componentDidMount() {
 	document.getElementById(this.props.node.options.id).addEventListener('contextmenu', (event) => {
@@ -38,14 +57,3 @@ export class TableNodeWidget extends React.Component {
 		this.showModal()
 	})
 }*/
-
-/* 
-
-								<PortWidget engine={this.props.engine} port={this.props.node.getPort('out')}>
-									<div className="circle-port out-port" />
-								</PortWidget>
-
-																		<PortWidget engine={this.props.engine} port={this.props.node.getPort('in')}>
-											<div className="circle-port in-port" />
-										</PortWidget>
-*/

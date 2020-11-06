@@ -1,4 +1,5 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { UIStore } from "./components/UIStore";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -17,11 +18,12 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import MailIcon from "@material-ui/icons/Mail";
-import "./App.css";
-import "./index.css";
+import AddIcon from "@material-ui/icons/Add";
 import { Diagram } from "./components/WidgetConfig";
 import { BodyWidget } from "./components/BodyWidget";
 import EditTable from "./components/table-menu/EditTable";
+import "./App.css";
+import "./index.css";
 
 let app = new Diagram();
 
@@ -49,6 +51,9 @@ const useStyles = makeStyles((theme) => ({
   menuButton: {
     marginRight: theme.spacing(2),
   },
+  newTable: {
+    right: '250px'
+  },
   hide: {
     display: "none",
   },
@@ -58,6 +63,9 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
+  },
+  pageTitle: {
+    flex: 1,
   },
   drawerHeader: {
     display: "flex",
@@ -89,8 +97,9 @@ const useStyles = makeStyles((theme) => ({
 const App = () => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
   const bodyWidgetRef = useRef();
+  const isRightMenuOpen = UIStore.useState(s => s.isRightMenuOpen);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -99,6 +108,10 @@ const App = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  useEffect(() => {
+    console.log(isRightMenuOpen)
+  })
 
   return (
     <div className={classes.root}>
@@ -119,9 +132,19 @@ const App = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography variant="h6" noWrap className={classes.pageTitle}>
             SQL-Table-Creator
           </Typography>
+          <IconButton
+            color="inherit"
+            onClick={() => bodyWidgetRef.current.createNewTable()}
+            className={classes.newTable}
+          >
+            <AddIcon />
+            <Typography variant="h6" noWrap>
+              New Table
+            </Typography>
+          </IconButton>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -145,7 +168,11 @@ const App = () => {
         <Divider />
         <List>
           {["New Table", "Starred"].map((text, index) => (
-            <ListItem button key={text} onClick={() => bodyWidgetRef.current.createNewTable()}>
+            <ListItem
+              button
+              key={text}
+              onClick={() => bodyWidgetRef.current.createNewTable()}
+            >
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
@@ -155,7 +182,7 @@ const App = () => {
         </List>
         <Divider />
       </Drawer>
-      <EditTable />
+      <EditTable open={isRightMenuOpen} UIStore={UIStore}/>
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,

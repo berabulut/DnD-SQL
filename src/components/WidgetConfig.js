@@ -13,7 +13,6 @@ export class Diagram {
 	  .registerFactory(new TableNodeFactory());
 	  this.activeModel = new SRD.DiagramModel();
 	  this.newModel();
-	  this.diagramEngine.repaintCanvas();
 	}
   
 	newModel() {

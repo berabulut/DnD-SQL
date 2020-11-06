@@ -1,5 +1,5 @@
 import * as React from "react";
-import { UIStore } from "../UIStore";
+import { TableStates } from "../TableStates";
 import { PortWidget } from "@projectstorm/react-diagrams";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -19,12 +19,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const TableNodeWidget = (props) => {
   const classes = useStyles();
+  const [selectedNode, setSelectedNode] = React.useState(props.node)
+
+  React.useEffect(() =>{
+    setSelectedNode(props.node)
+  })
 
   return (
     <List
       onClick={() =>
-        UIStore.update((s) => {
+        TableStates.update((s) => {
           s.isRightMenuOpen = true;
+          s.selectedNode = selectedNode;
         })}
       subheader={<ListSubheader>New Table</ListSubheader>}
       className={classes.root}

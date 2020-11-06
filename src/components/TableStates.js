@@ -1,5 +1,6 @@
 import { Store } from "pullstate";
 
-export const UIStore = new Store({
+export const TableStates = new Store({
   isRightMenuOpen: false,
+  selectedNode: "",
 });

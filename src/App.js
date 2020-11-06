@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { UIStore } from "./components/UIStore";
+import { TableStates } from "./components/TableStates";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   newTable: {
-    right: '250px'
+    right: "250px",
   },
   hide: {
     display: "none",
@@ -99,7 +99,8 @@ const App = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const bodyWidgetRef = useRef();
-  const isRightMenuOpen = UIStore.useState(s => s.isRightMenuOpen);
+  const isRightMenuOpen = TableStates.useState((s) => s.isRightMenuOpen);
+  const selectedNode = TableStates.useState((s) => s.selectedNode);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -109,9 +110,6 @@ const App = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    console.log(isRightMenuOpen)
-  })
 
   return (
     <div className={classes.root}>
@@ -182,7 +180,7 @@ const App = () => {
         </List>
         <Divider />
       </Drawer>
-      <EditTable open={isRightMenuOpen} UIStore={UIStore}/>
+      <EditTable open={isRightMenuOpen} TableStates={TableStates} selectedNode={selectedNode} />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -79,14 +79,17 @@ const useStyles = makeStyles((theme) => ({
 const EditTable = (props) => {
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(props.open);
+  const [open, setOpen] = useState(props.open);
+  const [selectedNode, setSelectedNode] = useState(props.selectedNode)
 
   useEffect(() => {
     setOpen(props.open);
+    setSelectedNode(props.selectedNode)
+    console.log(props.selectedNode)
   });
 
   const handleDrawerClose = () => {
-    props.UIStore.update((s) => {
+    props.TableStates.update((s) => {
       s.isRightMenuOpen = false;
     })
   };

@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useStoreState } from "pullstate";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { TableStates } from "../TableStates";
 import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
+import Button from '@material-ui/core/Button';
+import TextField from "@material-ui/core/TextField";
 import Divider from "@material-ui/core/Divider";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
-import CancelIcon from '@material-ui/icons/Cancel';
+import CancelIcon from "@material-ui/icons/Cancel";
+import SaveIcon from '@material-ui/icons/Save';
 
-
-const drawerWidth = 240;
+const drawerWidth = 340;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   menuTitle: {
-    flex: 1
+    flex: 1,
   },
   content: {
     flexGrow: 1,
@@ -70,23 +71,42 @@ const useStyles = makeStyles((theme) => ({
     }),
     marginLeft: 0,
   },
+  tableInputs: {
+    width: "65%",
+    margin: "auto",
+    marginTop: "5%",
+    marginBottom: "2.5%",
+  },
+  saveButton: {
+    width: "65%",
+    margin: "auto",
+    marginTop: "5%",
+    marginBottom: "2.5%",
+  }
 }));
 
 const EditTable = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const ReadTableStates = useStoreState(TableStates);
-  const [isMenuOpen, setMenuOpen] = useState(false)
-  const [selectedTableId, setSelectedTableId] = useState('')
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [selectedTableId, setSelectedTableId] = useState("");
+  const nameInputRef = useRef();
 
   useEffect(() => {
     setMenuOpen(ReadTableStates.isRightMenuOpen);
-    setSelectedTableId(ReadTableStates.selectedTableId)
-  }, [ReadTableStates.isRightMenuOpen, ReadTableStates.selectedTableId])
+    setSelectedTableId(ReadTableStates.selectedTableId);
+  }, [ReadTableStates.isRightMenuOpen, ReadTableStates.selectedTableId]);
 
   const handleDrawerClose = (s) => {
     s.isRightMenuOpen = false;
   };
+
+  const changeTableName = () => {
+    console.log(props.app.getDiagramEngine().getModel().getNode(selectedTableId))
+    props.app.getDiagramEngine().getModel().getNode(selectedTableId).name= nameInputRef.current.value;
+    props.app.diagramEngine.repaintCanvas();
+  }
 
   return (
     <Drawer
@@ -100,17 +120,36 @@ const EditTable = (props) => {
     >
       <div className={classes.drawerHeader}>
         <Typography variant="h5" noWrap className={classes.menuTitle}>
-            Edit Table
-          </Typography>
-        <IconButton onClick={() => {
-          TableStates.update(handleDrawerClose)
-        }}>
+          Edit Table
+        </Typography>
+        <IconButton
+          onClick={() => {
+            TableStates.update(handleDrawerClose);
+          }}
+        >
           <CancelIcon />
         </IconButton>
       </div>
       <Divider />
       <p>{selectedTableId}</p>
-      <List></List>
+      <Divider />
+      <TextField
+        className={classes.tableInputs}
+        id="table-name"
+        label="Table Name"
+        variant="outlined"
+        inputRef={nameInputRef}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        size="large"
+        className={classes.saveButton}
+        startIcon={<SaveIcon />}
+        onClick={changeTableName}
+      >
+        Save
+      </Button>
     </Drawer>
   );
 };

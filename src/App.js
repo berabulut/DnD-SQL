@@ -29,7 +29,6 @@ import "./index.css";
 let app = new Diagram();
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -53,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   newTable: {
-    right: "250px",
+    right: "350px",
   },
   hide: {
     display: "none",
@@ -180,7 +179,7 @@ const App = () => {
         </List>
         <Divider />
       </Drawer>
-      <EditTable />
+      <EditTable app={app} />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,

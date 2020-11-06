@@ -29,7 +29,7 @@ export const TableNodeWidget = (props) => {
 
   return (
     <List
-      subheader={<ListSubheader>New Table</ListSubheader>}
+      subheader={<ListSubheader>{props.node.name}</ListSubheader>}
       className={classes.root}
       onClick={() => {
         TableStates.update(openRightMenu)

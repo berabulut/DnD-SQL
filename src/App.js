@@ -20,7 +20,8 @@ import MailIcon from "@material-ui/icons/Mail";
 import "./App.css";
 import "./index.css";
 import { Diagram } from "./components/WidgetConfig";
-import { BodyWidget } from "./components/widgets/BodyWidget";
+import { BodyWidget } from "./components/BodyWidget";
+import EditTable from "./components/table-menu/EditTable";
 
 let app = new Diagram();
 
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
   },
   drawer: {
-    width: drawerWidth,
+    width: "auto",
     flexShrink: 0,
   },
   drawerPaper: {
@@ -154,6 +155,7 @@ const App = () => {
         </List>
         <Divider />
       </Drawer>
+      <EditTable />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,

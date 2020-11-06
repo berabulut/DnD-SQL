@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Diagram } from './components/WidgetConfig';
-import { BodyWidget } from './components/widgets/BodyWidget';
+import { BodyWidget } from './components/BodyWidget';
 
 
 ReactDOM.render(

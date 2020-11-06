@@ -1,12 +1,11 @@
 import * as React from "react";
 import * as _ from "lodash";
-import { TrayWidget } from "./TrayWidget";
-import { TrayItemWidget } from "./TrayItemWidget";
-import { DemoCanvasWidget } from "./DemoCanvasWidget";
+import { DemoCanvasWidget } from "./canvas/DemoCanvasWidget";
 import { DefaultNodeModel } from "@projectstorm/react-diagrams";
+import {TableNodeModel} from "./table-node/TableNodeModel";
 import { CanvasWidget } from "@projectstorm/react-canvas-core";
 import styled from "styled-components";
-import './Canvas.css';
+import './canvas/Canvas.css';
 
 export const Body = styled.div`
   flex-grow: 1;
@@ -38,6 +37,7 @@ export const Layer = styled.div`
 
 export class BodyWidget extends React.Component {
   connections = [{ source: "", target: "" }];
+
 
   doesConnectionExist = (src, trg) => {
     let state = false;
@@ -90,12 +90,13 @@ export class BodyWidget extends React.Component {
   };
 
   createNewTable = () => {
-    console.log('calisti')
-    const node = new DefaultNodeModel({
+    const node = new TableNodeModel({
+      color: 'blue',
       name: 'Table',
-      color: 'blue'
     })
-    node.setPosition(150, 150);
+    node.addOutPort();
+    node.addInPort();
+    node.setPosition(350, 150);
     this.props.app.getDiagramEngine().getModel().addNode(node);
     this.forceUpdate();
   }

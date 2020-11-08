@@ -38,7 +38,6 @@ export const Layer = styled.div`
 export class BodyWidget extends React.Component {
   connections = [{ source: "", target: "" }];
 
-
   doesConnectionExist = (src, trg) => {
     let state = false;
     this.connections.map((val, key) => {

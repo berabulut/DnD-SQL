@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
     textAlign: "center",
+    boxShadow: "0px 0px 10px white",
   },
   subHeader: {
     fontWeight: "600",

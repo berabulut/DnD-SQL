@@ -1,10 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import clsx from 'clsx';
+import clsx from "clsx";
 import { useStoreState } from "pullstate";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { TableStates } from "../TableStates";
+import { numeric, date, character, binary, miscellaneous } from "./dataTypes";
 import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 import TextField from "@material-ui/core/TextField";
 import Collapse from "@material-ui/core/Collapse";
 import Divider from "@material-ui/core/Divider";
@@ -12,7 +19,7 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SaveIcon from "@material-ui/icons/Save";
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
 const drawerWidth = 340;
 const useStyles = makeStyles((theme) => ({
@@ -87,11 +94,27 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "2.5%",
   },
   collapseButton: {
-    borderRadius: '0%'
+    borderRadius: "0%",
   },
   collapseTitle: {
-    fontWeight: '600',
-    fontSize: '18px'
+    fontWeight: "600",
+    fontSize: "18px",
+  },
+  fieldInput: {
+    flex: "0 0 45%",
+    marginLeft: "5%",
+  },
+  fieldWrapper: {
+    display: "flex",
+  },
+  fieldName: {
+    flex: 1,
+    textAlign: "center",
+    paddingTop: "10px",
+  },
+  selectType: {
+    flex: "0 0 45%",
+    marginLeft: "5%",
   }
 }));
 
@@ -103,6 +126,7 @@ const EditTable = (props) => {
   const [selectedTableId, setSelectedTableId] = useState("");
   const [selectedTable, setSelectedTable] = useState(null);
   const [expanded, setExpanded] = React.useState(false);
+  const [age, setAge] = React.useState("");
   const nameInputRef = useRef();
 
   useEffect(() => {
@@ -123,6 +147,10 @@ const EditTable = (props) => {
 
   const handleDrawerClose = (s) => {
     s.isRightMenuOpen = false;
+  };
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
   };
 
   const changeTableName = () => {
@@ -183,15 +211,82 @@ const EditTable = (props) => {
         aria-expanded={expanded}
         aria-label="show more"
       >
-        <Typography className={classes.collapseTitle} >Fields</Typography>
+        <Typography className={classes.collapseTitle}>Fields</Typography>
         <ExpandMoreIcon />
       </IconButton>
       {isMenuOpen === true && selectedTable !== undefined && (
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          {selectedTable.options.fields.map((value, key) => {
-            return <p key={key}>{value.Name}</p>;
-          })}
-        </Collapse>
+        <>
+          <Collapse in={expanded} timeout="auto" unmountOnExit>
+            {selectedTable.options.fields.map((value, key) => {
+              return (
+                <>
+                  <div className={classes.fieldWrapper}>
+                    <TextField
+                      className={classes.fieldInput}
+                      id="table-name"
+                      label="Field Name"
+                      inputRef={nameInputRef}
+                    />
+                    <p className={classes.fieldName} key={key}>
+                      {value.Name}
+                    </p>
+                  </div>
+                  <div className={classes.fieldWrapper}>
+                    <FormControl className={classes.selectType}>
+                      <InputLabel htmlFor="grouped-select">Grouping</InputLabel>
+                      <Select defaultValue="" id="grouped-select">
+                        <ListSubheader>NUMERIC</ListSubheader>
+                        {numeric.map((val, key) => {
+                          return (
+                            <MenuItem key={key} value={val}>
+                              {val}
+                            </MenuItem>
+                          );
+                        })}
+                        <ListSubheader>DATE</ListSubheader>
+                        {date.map((val, key) => {
+                          return (
+                            <MenuItem key={key} value={val}>
+                              {val}
+                            </MenuItem>
+                          );
+                        })}
+                        <ListSubheader>CHARACTER</ListSubheader>
+                        {character.map((val, key) => {
+                          return (
+                            <MenuItem key={key} value={val}>
+                              {val}
+                            </MenuItem>
+                          );
+                        })}
+                        <ListSubheader>BINARY</ListSubheader>
+                        {binary.map((val, key) => {
+                          return (
+                            <MenuItem key={key} value={val}>
+                              {val}
+                            </MenuItem>
+                          );
+                        })}
+                        <ListSubheader>MISCELLANEOUS</ListSubheader>
+                        {miscellaneous.map((val, key) => {
+                          return (
+                            <MenuItem key={key} value={val}>
+                              {val}
+                            </MenuItem>
+                          );
+                        })}
+                      </Select>
+                    </FormControl>
+                    <p className={classes.fieldName} key={key}>
+                      {value.Type}
+                    </p>
+                  </div>
+                </>
+              );
+            })}
+          </Collapse>
+          <Divider />
+        </>
       )}
     </Drawer>
   );

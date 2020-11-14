@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import clsx from "clsx";
 import { useStoreState } from "pullstate";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
@@ -8,7 +8,6 @@ import Drawer from "@material-ui/core/Drawer";
 import Button from "@material-ui/core/Button";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
@@ -115,18 +114,32 @@ const useStyles = makeStyles((theme) => ({
   selectType: {
     flex: "0 0 45%",
     marginLeft: "5%",
+  },
+  fieldsCollapseButton: {
+    width:"100%",
+    borderRadius: "0%"
+  },
+  fieldExpandText: {
+    flex: "0 0 10%"
+  },
+  fieldExpandIcon: {
+    flex: 1,
+    paddingLeft: "250px"
+  },
+  fieldsWrapper: {
+    textAlign: "center"
   }
 }));
 
 const EditTable = (props) => {
   const classes = useStyles();
-  const theme = useTheme();
   const ReadTableStates = useStoreState(TableStates);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [selectedTableId, setSelectedTableId] = useState("");
   const [selectedTable, setSelectedTable] = useState(null);
-  const [expanded, setExpanded] = React.useState(false);
-  const [age, setAge] = React.useState("");
+  const [expanded, setExpanded] = useState(false);
+  const [fieldExpandedList, setFieldExpandedList] =useState([]) 
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
   const nameInputRef = useRef();
 
   useEffect(() => {
@@ -138,25 +151,35 @@ const EditTable = (props) => {
         .getModel()
         .getNode(ReadTableStates.selectedTableId)
     );
-    console.log(selectedTable);
   }, [ReadTableStates.isRightMenuOpen, ReadTableStates.selectedTableId]);
 
   const handleExpandClick = () => {
+    if(selectedTable !== null && selectedTable !== undefined) {
+      selectedTable.options.fields.map((value) => {
+        setFieldExpandedList(oldArray => [...oldArray, {
+          fieldName: value.Name,
+          expanded: false
+        }]);
+      })
+    }
     setExpanded(!expanded);
   };
 
-  const handleDrawerClose = (s) => {
+  const expandField = (key) => {
+    fieldExpandedList[key].expanded = !fieldExpandedList[key].expanded;
+    forceUpdate()
+  }
+
+  const changeField = (key) => {
+
+  }
+
+  const handleDrawerClose = (s) => { // closes table onClick right menu
     s.isRightMenuOpen = false;
   };
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
 
   const changeTableName = () => {
-    console.log(
-      props.app.getDiagramEngine().getModel().getNode(selectedTableId)
-    );
     props.app.getDiagramEngine().getModel().getNode(selectedTableId).name =
       nameInputRef.current.value;
     props.app.diagramEngine.repaintCanvas();
@@ -219,7 +242,19 @@ const EditTable = (props) => {
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             {selectedTable.options.fields.map((value, key) => {
               return (
-                <>
+                <div className={classes.fieldsWrapper}>
+                  <IconButton
+                    className={classes.fieldsCollapseButton}
+                    onClick={() => {expandField(key)}}
+                    aria-expanded={fieldExpandedList[key] !== undefined ? fieldExpandedList[key].expanded : false}
+                    aria-label="show more"
+                  >
+                    <Typography className={classes.fieldExpandText}>
+                      {value.Name}
+                    </Typography>
+                    <ExpandMoreIcon className={classes.fieldExpandIcon} />
+                  </IconButton>
+                  <Collapse in={fieldExpandedList[key] !== undefined ? fieldExpandedList[key].expanded : false} timeout="auto" unmountOnExit >
                   <div className={classes.fieldWrapper}>
                     <TextField
                       className={classes.fieldInput}
@@ -281,7 +316,18 @@ const EditTable = (props) => {
                       {value.Type}
                     </p>
                   </div>
-                </>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    className={classes.saveButton}
+                    startIcon={<SaveIcon />}
+                    onClick={changeTableName}
+                  >
+                    Save
+                  </Button>
+                  </Collapse>
+                </div>
               );
             })}
           </Collapse>
@@ -293,3 +339,5 @@ const EditTable = (props) => {
 };
 
 export default EditTable;
+
+

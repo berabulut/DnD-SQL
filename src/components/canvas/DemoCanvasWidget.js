@@ -41,8 +41,8 @@ export class DemoCanvasWidget extends React.Component {
   render() {
     return (
       <Container
-        background={this.props.background || "rgb(12 43 70)"}
-        color={this.props.color || "rgba(193,240,219, 0.05)"}
+        background={this.props.background || "rgb(22, 36, 62)"}
+        color={this.props.color || "rgb(239, 181, 9, 0.08)"} 
       >
         {this.props.children}
       </Container>

@@ -1,28 +1,13 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useStoreState } from "pullstate";
 import { TableStates } from "./components/TableStates";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
-import AddIcon from "@material-ui/icons/Add";
+import { Drawer, CssBaseline, AppBar, Toolbar, List, Typography, Divider, IconButton, ListItem, ListItemText, ListItemIcon} from "@material-ui/core";
+import {Menu, ChevronLeft, ChevronRight, Inbox, Mail, Add} from "@material-ui/icons";
 import { Diagram } from "./components/WidgetConfig";
 import { BodyWidget } from "./components/BodyWidget";
-import EditTable from "./components/table-menu/EditTable";
+import TableDrawer from "./components/table-menu/TableDrawer";
 import "./App.css";
 import "./index.css";
 
@@ -35,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   appBar: {
-    backgroundColor: "rgb(255 139 15)",
+    backgroundColor: "rgb(230, 156, 28)",
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -51,9 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-  },
-  newTable: {
-    right: "350px",
   },
   hide: {
     display: "none",
@@ -110,7 +92,6 @@ const App = () => {
     setOpen(false);
   };
 
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -128,7 +109,7 @@ const App = () => {
             edge="start"
             className={clsx(classes.menuButton, open && classes.hide)}
           >
-            <MenuIcon />
+            <Menu />
           </IconButton>
           <Typography variant="h6" noWrap className={classes.pageTitle}>
             SQL-Table-Creator
@@ -138,7 +119,7 @@ const App = () => {
             onClick={() => bodyWidgetRef.current.createNewTable()}
             className={classes.newTable}
           >
-            <AddIcon />
+            <Add />
             <Typography variant="h6" noWrap>
               New Table
             </Typography>
@@ -157,9 +138,9 @@ const App = () => {
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "ltr" ? (
-              <ChevronLeftIcon />
+              <ChevronLeft />
             ) : (
-              <ChevronRightIcon />
+              <ChevronRight />
             )}
           </IconButton>
         </div>
@@ -172,7 +153,7 @@ const App = () => {
               onClick={() => bodyWidgetRef.current.createNewTable()}
             >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                {index % 2 === 0 ? <Inbox /> : <Mail />}
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
@@ -180,7 +161,7 @@ const App = () => {
         </List>
         <Divider />
       </Drawer>
-      <EditTable app={app} />
+      <TableDrawer app={app} />
       <main
         className={clsx(classes.content, {
           [classes.contentShift]: open,

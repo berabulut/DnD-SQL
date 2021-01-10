@@ -3,7 +3,8 @@ import {useStoreState} from "pullstate";
 import {makeStyles} from "@material-ui/core/styles";
 import {TableStates} from "../TableStates";
 import DrawerHeader from "./DrawerHeader";
-import {TableName, TableFields} from "./TableFields";
+import TableField from "./TableField";
+import TableName from "./TableName";
 import {
     Drawer,
     Collapse,
@@ -167,7 +168,7 @@ const TableDrawer = (props) => {
                         {selectedTable.options.fields.map((value, key) => {
                             return (
                                 <>
-                                    <TableFields fieldExpandedList={fieldExpandedList} table={value} tableKey={key}/>
+                                    <TableField fieldExpandedList={fieldExpandedList} table={value} tableKey={key}/>
                                     <Divider/>
                                 </>
 

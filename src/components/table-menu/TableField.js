@@ -16,44 +16,8 @@ import {
     IconButton,
 } from "@material-ui/core";
 import {Save, ExpandMore} from "@material-ui/icons";
-import {numeric, date, character, binary, miscellaneous} from "./dataTypes";
+import {dataTypes} from "./dataTypes";
 
-const nameStyles = makeStyles((theme) => ({
-    drawerHeader: {
-        display: "flex",
-        alignItems: "center",
-        padding: theme.spacing(0, 1),
-        // necessary for content to be below app bar
-        ...theme.mixins.toolbar,
-    },
-    menuTitle: {
-        flex: 1,
-    },
-    tableInputs: {
-        width: "65%",
-        margin: "auto",
-        marginTop: "5%",
-        marginBottom: "2.5%",
-    },
-    textFieldContainer: {
-        width: "100%",
-        textAlign: "center",
-    },
-    TableNameContainer: {
-        textAlign: "center",
-    },
-    saveButton: {
-        width: "45%",
-        margin: "auto",
-        marginTop: "2.5%",
-        marginBottom: "5%",
-        backgroundColor: "rgb(24 66 105)",
-        color: "white",
-        "&:hover": {
-            backgroundColor: "rgb(24 66 105 / 85%)",
-        },
-    },
-}));
 
 const fieldStyles = makeStyles((theme) => ({
     collapse: {
@@ -96,43 +60,7 @@ const fieldStyles = makeStyles((theme) => ({
     },
 }))
 
-export const TableName = (props) => {
-    const classes = nameStyles();
-    const nameInputRef = useRef();
-    const changeTableName = () => {
-        props.app
-            .getDiagramEngine()
-            .getModel()
-            .getNode(props.selectedTableId).name = nameInputRef.current.value;
-        props.app.diagramEngine.repaintCanvas();
-    };
-
-    return (
-        <div className={classes.TableNameContainer}>
-            <div className={classes.textFieldContainer}>
-                <TextField
-                    className={classes.tableInputs}
-                    id="table-name"
-                    label="Table Name"
-                    variant="outlined"
-                    inputRef={nameInputRef}
-                />
-            </div>
-            <Button
-                variant="contained"
-                size="large"
-                className={classes.saveButton}
-                startIcon={<Save/>}
-                onClick={changeTableName}
-            >
-                Save
-            </Button>
-            <Divider/>
-        </div>
-    );
-};
-
-export const TableFields = (props) => {
+const TableField = (props) => {
     const classes = fieldStyles();
     const nameInputRef = useRef();
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
@@ -141,7 +69,6 @@ export const TableFields = (props) => {
         props.fieldExpandedList[key].expanded = !props.fieldExpandedList[key].expanded;
         forceUpdate(); // bcz not using setState function here
     };
-
 
     return (
         <div className={classes.fieldsWrapper}>
@@ -187,45 +114,21 @@ export const TableFields = (props) => {
                     <FormControl className={classes.selectType}>
                         <InputLabel htmlFor="grouped-select">Grouping</InputLabel>
                         <Select defaultValue="" id="grouped-select">
-                            <ListSubheader>NUMERIC</ListSubheader>
-                            {numeric.map((val, key) => {
+                            {dataTypes !== undefined && dataTypes.map((val, key) => {
                                 return (
-                                    <MenuItem key={key} value={val}>
-                                        {val}
-                                    </MenuItem>
-                                );
-                            })}
-                            <ListSubheader>DATE</ListSubheader>
-                            {date.map((val, key) => {
-                                return (
-                                    <MenuItem key={key} value={val}>
-                                        {val}
-                                    </MenuItem>
-                                );
-                            })}
-                            <ListSubheader>CHARACTER</ListSubheader>
-                            {character.map((val, key) => {
-                                return (
-                                    <MenuItem key={key} value={val}>
-                                        {val}
-                                    </MenuItem>
-                                );
-                            })}
-                            <ListSubheader>BINARY</ListSubheader>
-                            {binary.map((val, key) => {
-                                return (
-                                    <MenuItem key={key} value={val}>
-                                        {val}
-                                    </MenuItem>
-                                );
-                            })}
-                            <ListSubheader>MISCELLANEOUS</ListSubheader>
-                            {miscellaneous.map((val, key) => {
-                                return (
-                                    <MenuItem key={key} value={val}>
-                                        {val}
-                                    </MenuItem>
-                                );
+                                    <>
+                                        <ListSubheader key={key}>{val.name}</ListSubheader>
+                                        {
+                                            val.types.map((value, index) => {
+                                                return (
+                                                    <MenuItem key={index} value={value}>
+                                                        {value}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </>
+                                )
                             })}
                         </Select>
                     </FormControl>
@@ -245,3 +148,5 @@ export const TableFields = (props) => {
         </div>
     );
 };
+
+export default TableField

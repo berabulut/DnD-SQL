@@ -1,5 +1,4 @@
 1. Edit table properly:
- -adding new field
  -edit field type
  -field name
 

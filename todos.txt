@@ -1,0 +1,8 @@
+1. Edit table properly:
+ -adding new field
+ -edit field type
+ -field name
+
+2. Dragging for
+
+3. Create SQL commands

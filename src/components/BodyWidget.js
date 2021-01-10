@@ -88,8 +88,14 @@ export class BodyWidget extends React.Component {
 
   createNewTable = () => {
     const node = new TableNodeModel({
-      color: 'blue',
       name: 'Table',
+      fields: [{
+        Name: "id",
+        Type: "Integer",
+        Nullable: false,
+        Indexed: true,
+        Unique: true,
+      }]
     })
     node.addOutPort();
     node.addInPort();

@@ -12,7 +12,7 @@ export class TableNodeModel extends NodeModel {
         this.fields = options.fields || {
             fields: [{
                 Name: "id",
-                Type: "Integer",
+                Type: "Int",
                 Nullable: false,
                 Indexed: true,
                 Unique: true,

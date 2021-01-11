@@ -2,7 +2,6 @@ import React, {useRef, useState, useReducer, useEffect} from "react";
 import {TableStates} from "../TableStates";
 import {makeStyles} from "@material-ui/core/styles";
 import {
-    Drawer,
     Button,
     InputLabel,
     MenuItem,
@@ -11,10 +10,11 @@ import {
     Select,
     TextField,
     Collapse,
-    Divider,
     Typography,
     IconButton,
+    Snackbar
 } from "@material-ui/core";
+import MuiAlert from '@material-ui/lab/Alert';
 import {Save, ExpandMore} from "@material-ui/icons";
 import {dataTypes} from "./dataTypes";
 
@@ -39,6 +39,7 @@ const fieldStyles = makeStyles((theme) => ({
     selectType: {
         flex: "0 0 45%",
         marginLeft: "5%",
+        textAlign: "start"
     },
     fieldsCollapseButton: {
         width: "100%",
@@ -64,14 +65,60 @@ const TableField = (props) => {
     const classes = fieldStyles();
     const nameInputRef = useRef();
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
+    const [errorMsg, setErrorMsg] = useState("");
+    const [openError, setOpenError] = useState(false);
+    const [fieldType, setFieldType] = useState("int");
 
     const expandField = (key) => { // expanding selected field
         props.fieldExpandedList[key].expanded = !props.fieldExpandedList[key].expanded;
         forceUpdate(); // bcz not using setState function here
     };
 
+    const handleFieldTypeChange = (type) => {
+        setFieldType(type)
+    }
+    const saveChanges = () => {
+        if (nameInputRef.current.value.trim().length <= 0) {
+            openErrorMessage("Field name cannot be empty!")
+        } else {
+            props.app
+                .getDiagramEngine()
+                .getModel()
+                .getNode(props.tableId)
+                .fields
+                .map((val, key) => {
+                    if (key === props.tableKey) {
+                        val.Name = nameInputRef.current.value;
+                        val.Type = fieldType;
+                        TableStates.update((s) => {
+                            s.updateCanvas = !s.updateCanvas;
+                        })
+                    }
+                })
+            closeErrorMessage();
+        }
+    }
+
+    const Alert = (props) => {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+
+    const closeErrorMessage = () => {
+        setOpenError(false);
+    }
+
+    const openErrorMessage = (message) => {
+        setErrorMsg(message);
+        setOpenError(true);
+    }
+
     return (
         <div className={classes.fieldsWrapper}>
+            <Snackbar open={openError} autoHideDuration={6000}>
+                <Alert onClose={() => closeErrorMessage()} severity="error">
+                    {errorMsg}
+                </Alert>
+            </Snackbar>
             <IconButton
                 className={classes.fieldsCollapseButton}
                 onClick={() => {
@@ -113,21 +160,26 @@ const TableField = (props) => {
                 <div className={classes.fieldWrapper}>
                     <FormControl className={classes.selectType}>
                         <InputLabel htmlFor="grouped-select">Grouping</InputLabel>
-                        <Select defaultValue="" id="grouped-select">
+                        <Select
+                            value={fieldType}
+                            renderValue={() => fieldType}
+                            defaultValue=""
+                            id="grouped-select"
+                        >
                             {dataTypes !== undefined && dataTypes.map((val, key) => {
                                 return (
-                                    <>
+                                    <div key={key}>
                                         <ListSubheader key={key}>{val.name}</ListSubheader>
                                         {
                                             val.types.map((value, index) => {
                                                 return (
-                                                    <MenuItem key={index} value={value}>
+                                                    <MenuItem onClick={() => handleFieldTypeChange(value)} key={index} value={value}>
                                                         {value}
                                                     </MenuItem>
                                                 )
                                             })
                                         }
-                                    </>
+                                    </div>
                                 )
                             })}
                         </Select>
@@ -140,6 +192,7 @@ const TableField = (props) => {
                     variant="contained"
                     size="large"
                     className={classes.saveButton}
+                    onClick={() => saveChanges()}
                     startIcon={<Save/>}
                 >
                     Save

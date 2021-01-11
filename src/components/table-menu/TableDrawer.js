@@ -116,8 +116,8 @@ const TableDrawer = (props) => {
 
     const addNewField = () => { // Adding new field to table
         selectedTable.addNewField();
-        TableStates.update(updateCanvas)
         updateExpandedList();
+        TableStates.update(updateCanvas);
     }
 
     const updateExpandedList = () => { // updating selected table's fields on UI
@@ -163,14 +163,14 @@ const TableDrawer = (props) => {
                 <ExpandMore/>
             </IconButton>
             {isMenuOpen === true && selectedTable !== undefined && (
-                <>
+                <div>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         {selectedTable.options.fields.map((value, key) => {
                             return (
-                                <>
-                                    <TableField fieldExpandedList={fieldExpandedList} table={value} tableKey={key}/>
+                                <div key={key}>
+                                    <TableField tableId={selectedTableId} app={props.app} fieldExpandedList={fieldExpandedList} table={value} tableKey={key}/>
                                     <Divider/>
-                                </>
+                                </div>
 
                             );
                         })}
@@ -183,7 +183,7 @@ const TableDrawer = (props) => {
                         <Typography className={classes.collapseTitle}>New Field &nbsp;</Typography>
                         <AddCircleTwoTone/>
                     </IconButton>
-                </>
+                </div>
             )}
         </Drawer>
     );

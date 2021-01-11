@@ -1,4 +1,4 @@
-# SQL-Table-Creator
+# SQL-Table-Editor
 
 <img src = "prev.png"></img><br>
 
